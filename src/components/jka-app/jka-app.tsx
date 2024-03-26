@@ -53,11 +53,11 @@ export class JkaApp {
    return (
      <Host>
        { element === "list"
-       ? <jka-jka-employee-list  api-base={this.apiBase}
-           oneditor-closed={ () => console.log('navigate("./list")')} >
-         </jka-jka-employee-list>
+       ? <jka-employee-list  api-base={this.apiBase}
+           > 
+         </jka-employee-list>
        : <jka-timesheet  api-base={this.apiBase} worker={worker}
-           onentry-clicked={ (ev: CustomEvent<string>)=> console.log('navigate("./worker/" + ev.detail)', ev) } >
+           >
        </jka-timesheet>
        }
  

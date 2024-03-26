@@ -12,6 +12,7 @@ export namespace Components {
         "basePath": string;
     }
     interface JkaEmployeeList {
+        "apiBase": string;
     }
     interface JkaTimesheet {
         "ambulanceId": string;
@@ -51,6 +52,7 @@ declare namespace LocalJSX {
         "basePath"?: string;
     }
     interface JkaEmployeeList {
+        "apiBase"?: string;
     }
     interface JkaTimesheet {
         "ambulanceId"?: string;
