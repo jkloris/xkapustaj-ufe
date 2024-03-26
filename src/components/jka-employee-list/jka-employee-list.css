@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  height: 100%;
+}
+.filter-container {
+  display: flex;
+  box-shadow: 0px 5px 5px 0px #0000008c;
+  z-index: 12;
+  position: relative;
+}
+.filter-container > * {
+  margin-right: 1rem;
+}
+
+.employee-grid{
+  max-height: 80%;
+  overflow: auto;
+  border: 1px solid #00000047;
+}
+
+.full-height{
+  height: 100%;
+}
+
+.employee-item{
+  cursor: pointer;
+}
+
