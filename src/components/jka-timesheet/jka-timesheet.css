@@ -1,3 +1,37 @@
 :host {
   display: block;
+  height: 100%;
+}
+
+table{
+  width: 100%;
+  
+  padding: 1em;
+  /* background-color: cornflowerblue; */
+}
+tr{
+  height: 3em;
+    text-align: center;
+    box-shadow: 0px 1px #0000007a;
+}
+.grid-row {
+  cursor: pointer;
+}
+
+
+table tbody, table thead{
+  display: block;
+  width: 100%;
+}
+
+table tbody{
+  max-height: 60vh;
+  box-shadow: inset 0px 2px 8px 0px #00000078;
+  overflow: auto;
+  background-color: white;
+}
+
+
+th, td{
+  width: 30vw;
 }

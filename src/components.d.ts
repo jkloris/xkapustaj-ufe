@@ -6,56 +6,70 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+    interface JkaApp {
+        "ambulanceId": string;
+        "apiBase": string;
+        "basePath": string;
+    }
+    interface JkaEmployeeList {
+    }
+    interface JkaTimesheet {
+        "ambulanceId": string;
+        "apiBase": string;
+        "worker": string;
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLJkaAppElement extends Components.JkaApp, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLJkaAppElement: {
+        prototype: HTMLJkaAppElement;
+        new (): HTMLJkaAppElement;
+    };
+    interface HTMLJkaEmployeeListElement extends Components.JkaEmployeeList, HTMLStencilElement {
+    }
+    var HTMLJkaEmployeeListElement: {
+        prototype: HTMLJkaEmployeeListElement;
+        new (): HTMLJkaEmployeeListElement;
+    };
+    interface HTMLJkaTimesheetElement extends Components.JkaTimesheet, HTMLStencilElement {
+    }
+    var HTMLJkaTimesheetElement: {
+        prototype: HTMLJkaTimesheetElement;
+        new (): HTMLJkaTimesheetElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "jka-app": HTMLJkaAppElement;
+        "jka-employee-list": HTMLJkaEmployeeListElement;
+        "jka-timesheet": HTMLJkaTimesheetElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
+    interface JkaApp {
+        "ambulanceId"?: string;
+        "apiBase"?: string;
+        "basePath"?: string;
+    }
+    interface JkaEmployeeList {
+    }
+    interface JkaTimesheet {
+        "ambulanceId"?: string;
+        "apiBase"?: string;
+        "worker"?: string;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "jka-app": JkaApp;
+        "jka-employee-list": JkaEmployeeList;
+        "jka-timesheet": JkaTimesheet;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "jka-app": LocalJSX.JkaApp & JSXBase.HTMLAttributes<HTMLJkaAppElement>;
+            "jka-employee-list": LocalJSX.JkaEmployeeList & JSXBase.HTMLAttributes<HTMLJkaEmployeeListElement>;
+            "jka-timesheet": LocalJSX.JkaTimesheet & JSXBase.HTMLAttributes<HTMLJkaTimesheetElement>;
         }
     }
 }

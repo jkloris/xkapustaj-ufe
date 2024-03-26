@@ -1,11 +1,11 @@
 import { newSpecPage } from '@stencil/core/testing';
-import { JkaTimesheet } from '../jka-timesheet';
+import { JkaApp } from '../jka-app';
 
-describe('jka-timesheet', () => {
+describe('jka-app', () => {
   it('renders', async () => {
     const page = await newSpecPage({
-      components: [JkaTimesheet],
-      html: `<jka-timesheet></jka-timesheet>`,
+      components: [JkaApp],
+      html: `<jka-app></jka-app>`,
     });
     expect(page.root).not.toBeNull();
   });
