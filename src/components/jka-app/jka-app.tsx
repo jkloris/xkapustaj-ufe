@@ -52,6 +52,7 @@ export class JkaApp {
  
    return (
      <Host>
+     <p>Hello This is app xkapustaj</p> 
        { element === "list"
        ? <jka-employee-list  api-base={this.apiBase}
            > 
