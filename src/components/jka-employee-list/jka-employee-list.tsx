@@ -1,4 +1,4 @@
-import { Component, Prop, State, h } from '@stencil/core';
+import { Component, State, h } from '@stencil/core';
 import { iEmployee } from '../../models/iEmployee';
 
 @Component({
@@ -7,7 +7,7 @@ import { iEmployee } from '../../models/iEmployee';
   shadow: true,
 })
 export class JkaEmployeeList {
-  @Prop()  apiBase: string;
+  // @Prop()  apiBase: string;
   
   @State() employees: iEmployee[] = [
     { name: 'John Doe', jobTitle: 'Software Engineer' },
