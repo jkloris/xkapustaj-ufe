@@ -1,4 +1,5 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
+import { iEmployee } from '../../models/iEmployee';
 declare global {
   interface Window { navigation: any; }
 }
@@ -15,6 +16,10 @@ export class JkaApp {
   @Prop() basePath: string="";
   @Prop() apiBase: string;
   @Prop() ambulanceId: string;
+
+  //TMP nav solution
+  @State() private worker: iEmployee
+  @State() private element: string = 'list'
 
   componentWillLoad() {
     const baseUri = new URL(this.basePath, document.baseURI || "/").pathname;
@@ -36,13 +41,24 @@ export class JkaApp {
     toRelative(location.pathname)
   }
 
+ toTimesheet(employee: iEmployee) {
+   console.log(employee)
+   this.worker = employee
+   this.element = 'timesheet'
+   
+ }
+
+ toList(event:string){
+  console.log(event)
+  this.element = 'list'
+ }
+
  render() {
-   let element = "list"
-   let worker = ''
+  //  let element = "list"
    if ( this.relativePath.startsWith("worker/"))
    {
-     element = "timesheet";
-     worker = this.relativePath.split("/")[1]
+     this.element = "timesheet";
+     this.worker = null//this.relativePath.split("/")[1]
    }
  
   //  const navigate = (path:string) => {
@@ -52,12 +68,16 @@ export class JkaApp {
  
    return (
      <Host>
-     <p>Hello This is app xkapustaj</p> 
-       { element === "list"
-       ? <jka-employee-list  api-base={this.apiBase}
+     
+       { this.element === "list"
+       ? <jka-employee-list 
+       onemployee-clicked={(ev: CustomEvent) => this.toTimesheet(ev.detail) }
+       api-base={this.apiBase}
            > 
          </jka-employee-list>
-       : <jka-timesheet  api-base={this.apiBase} worker={worker}
+       : <jka-timesheet 
+       ontimesheet-closed={(ev: CustomEvent) =>this.toList(ev.detail) }
+        api-base={this.apiBase} worker={this.worker}
            >
        </jka-timesheet>
        }

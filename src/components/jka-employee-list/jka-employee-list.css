@@ -22,7 +22,8 @@
   height: 100%;
 }
 
-.employee-item{
+.employee-item :hover{
   cursor: pointer;
+  background-color: rgb(193, 193, 193);
 }
 

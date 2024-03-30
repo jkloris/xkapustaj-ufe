@@ -5,6 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { iEmployee } from "./models/iEmployee";
+export { iEmployee } from "./models/iEmployee";
 export namespace Components {
     interface JkaApp {
         "ambulanceId": string;
@@ -17,8 +19,16 @@ export namespace Components {
     interface JkaTimesheet {
         "ambulanceId": string;
         "apiBase": string;
-        "worker": string;
+        "worker": iEmployee;
     }
+}
+export interface JkaEmployeeListCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLJkaEmployeeListElement;
+}
+export interface JkaTimesheetCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLJkaTimesheetElement;
 }
 declare global {
     interface HTMLJkaAppElement extends Components.JkaApp, HTMLStencilElement {
@@ -27,13 +37,35 @@ declare global {
         prototype: HTMLJkaAppElement;
         new (): HTMLJkaAppElement;
     };
+    interface HTMLJkaEmployeeListElementEventMap {
+        "employee-clicked": iEmployee;
+    }
     interface HTMLJkaEmployeeListElement extends Components.JkaEmployeeList, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLJkaEmployeeListElementEventMap>(type: K, listener: (this: HTMLJkaEmployeeListElement, ev: JkaEmployeeListCustomEvent<HTMLJkaEmployeeListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLJkaEmployeeListElementEventMap>(type: K, listener: (this: HTMLJkaEmployeeListElement, ev: JkaEmployeeListCustomEvent<HTMLJkaEmployeeListElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLJkaEmployeeListElement: {
         prototype: HTMLJkaEmployeeListElement;
         new (): HTMLJkaEmployeeListElement;
     };
+    interface HTMLJkaTimesheetElementEventMap {
+        "timesheet-closed": string;
+    }
     interface HTMLJkaTimesheetElement extends Components.JkaTimesheet, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLJkaTimesheetElementEventMap>(type: K, listener: (this: HTMLJkaTimesheetElement, ev: JkaTimesheetCustomEvent<HTMLJkaTimesheetElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLJkaTimesheetElementEventMap>(type: K, listener: (this: HTMLJkaTimesheetElement, ev: JkaTimesheetCustomEvent<HTMLJkaTimesheetElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLJkaTimesheetElement: {
         prototype: HTMLJkaTimesheetElement;
@@ -53,11 +85,13 @@ declare namespace LocalJSX {
     }
     interface JkaEmployeeList {
         "apiBase"?: string;
+        "onEmployee-clicked"?: (event: JkaEmployeeListCustomEvent<iEmployee>) => void;
     }
     interface JkaTimesheet {
         "ambulanceId"?: string;
         "apiBase"?: string;
-        "worker"?: string;
+        "onTimesheet-closed"?: (event: JkaTimesheetCustomEvent<string>) => void;
+        "worker"?: iEmployee;
     }
     interface IntrinsicElements {
         "jka-app": JkaApp;

@@ -35,3 +35,7 @@ table tbody{
 th, td{
   width: 30vw;
 }
+
+md-elevated-button{
+  margin: 1em;
+}
