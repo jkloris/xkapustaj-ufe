@@ -13,8 +13,8 @@ export class JkaApp {
   @State() private relativePath = "";
 
   @Prop() basePath: string="";
-  // @Prop() apiBase: string;
-  // @Prop() ambulanceId: string;
+  @Prop() apiBase: string;
+  @Prop() ambulanceId: string;
 
   componentWillLoad() {
     const baseUri = new URL(this.basePath, document.baseURI || "/").pathname;
@@ -54,10 +54,10 @@ export class JkaApp {
      <Host>
      <p>Hello This is app xkapustaj</p> 
        { element === "list"
-       ? <jka-employee-list  
+       ? <jka-employee-list  api-base={this.apiBase}
            > 
          </jka-employee-list>
-       : <jka-timesheet 
+       : <jka-timesheet  api-base={this.apiBase} worker={worker}
            >
        </jka-timesheet>
        }

@@ -1,4 +1,4 @@
-import { Component, State, h } from '@stencil/core';
+import { Component, Prop, State, h } from '@stencil/core';
 import { iEmployee } from '../../models/iEmployee';
 
 
@@ -9,12 +9,12 @@ import { iEmployee } from '../../models/iEmployee';
 })
 export class JkaTimesheet {
 
-  // @Prop() worker: string = '';
-  // @Prop() ambulanceId: string;
-  // @Prop() apiBase: string;
+  @Prop() worker: string = '';
+  @Prop() ambulanceId: string;
+  @Prop() apiBase: string;
   
   @State() employee: iEmployee = {
-    name: 'John Doe ',
+    name: 'John Doe ' + this.worker,
     jobTitle: 'Software Engineer',
     timesheet: [
       { date: '2022-01-01', hours: 8, description: 'Worked on project A' },
