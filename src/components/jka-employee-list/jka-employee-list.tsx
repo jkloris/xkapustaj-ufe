@@ -1,4 +1,4 @@
-import { Component, Prop, State, h, Event, EventEmitter } from '@stencil/core';
+import { Component, Prop, State, h } from '@stencil/core';
 import { iEmployee } from '../../models/iEmployee';
 
 @Component({
@@ -8,7 +8,7 @@ import { iEmployee } from '../../models/iEmployee';
 })
 export class JkaEmployeeList {
   @Prop()  apiBase: string;
-  @Event({eventName:"employee-clicked"}) employeeClicked: EventEmitter<iEmployee>;
+  // @Event({eventName:"employee-clicked"}) employeeClicked: EventEmitter<iEmployee>;
   
   @State() employees: iEmployee[] = [
     { name: 'John Doe', jobTitle: 'Software Engineer' },
@@ -44,10 +44,10 @@ export class JkaEmployeeList {
     this.filteredEmployees = [...this.employees];
   }
 
-  employeeSelect(employee: iEmployee) {
-    this.employeeClicked.emit(employee);
+  // employeeSelect(employee: iEmployee) {
+  //   this.employeeClicked.emit(employee);
 
-  }
+  // }
 
   render() {
     return (
@@ -61,7 +61,8 @@ export class JkaEmployeeList {
         <md-list class="employee-grid">
         {this.filteredEmployees.map(employee => (
           <div class="employee-item" >
-            <md-list-item on-click={() => this.employeeSelect(employee)}>
+            {/* on-click={() => this.employeeSelect(employee)} */}
+            <md-list-item >
               <div slot='headline'>{employee.name}</div>
               <div slot='supporting-text'> {employee.jobTitle}</div>
             </md-list-item>

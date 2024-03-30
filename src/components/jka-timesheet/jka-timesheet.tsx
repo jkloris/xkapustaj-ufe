@@ -1,4 +1,4 @@
-import { Component, Prop, State, h ,Event, EventEmitter} from '@stencil/core';
+import { Component, Prop, State, h } from '@stencil/core';
 import { iEmployee } from '../../models/iEmployee';
 
 
@@ -9,20 +9,17 @@ import { iEmployee } from '../../models/iEmployee';
 })
 export class JkaTimesheet {
 
-  @Event({eventName: "timesheet-closed"}) closed: EventEmitter<string>;
+  // @Event({eventName: "timesheet-closed"}) closed: EventEmitter<string>;
 
 
-  @Prop() worker: iEmployee = {
-    name: 'John Doe',
-    jobTitle: 'Software Engineer',
-    timesheet: []
-  };
+  @Prop() worker: string = "";
+  
   @Prop() ambulanceId: string;
   @Prop() apiBase: string;
   
   @State() employee: iEmployee = {
-    name: this.worker.name,
-    jobTitle:  this.worker.jobTitle,
+    name: "John Doe",
+    jobTitle:  "Software Engineer",
     timesheet: [
       { date: '2022-01-01', hours: 8, description: 'Worked on project A' },
       { date: '2022-01-02', hours: 6, description: 'Worked on project B' },
@@ -75,7 +72,7 @@ export class JkaTimesheet {
           ))}
           </tbody>
         </table>
-        <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button>
+        {/* <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button> */}
         <md-elevated-button>Add Task</md-elevated-button>
 
       </div>

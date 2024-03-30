@@ -18,8 +18,6 @@ export class JkaApp {
   @Prop() ambulanceId: string;
 
   //TMP nav solution
-  @State() private worker: iEmployee
-  @State() private element: string = 'list'
 
   componentWillLoad() {
     const baseUri = new URL(this.basePath, document.baseURI || "/").pathname;
@@ -43,22 +41,23 @@ export class JkaApp {
 
  toTimesheet(employee: iEmployee) {
    console.log(employee)
-   this.worker = employee
-   this.element = 'timesheet'
+  //  worker = employee
+  //  element = 'timesheet'
    
  }
 
  toList(event:string){
   console.log(event)
-  this.element = 'list'
+  // this.element = 'list'
  }
 
  render() {
-  //  let element = "list"
+   let element = "list"
+   let worker = ""
    if ( this.relativePath.startsWith("worker/"))
    {
-     this.element = "timesheet";
-     this.worker = null//this.relativePath.split("/")[1]
+     element = "timesheet";
+     worker = this.relativePath.split("/")[1]
    }
  
   //  const navigate = (path:string) => {
@@ -68,20 +67,20 @@ export class JkaApp {
  
    return (
      <Host>
-     
-       { this.element === "list"
+     {/* onemployee-clicked={(ev: CustomEvent) => this.toTimesheet(ev.detail) } */}
+       { element === "list"
        ? <jka-employee-list 
-       onemployee-clicked={(ev: CustomEvent) => this.toTimesheet(ev.detail) }
+       
        api-base={this.apiBase}
            > 
          </jka-employee-list>
        : <jka-timesheet 
-       ontimesheet-closed={(ev: CustomEvent) =>this.toList(ev.detail) }
-        api-base={this.apiBase} worker={this.worker}
+      
+        api-base={this.apiBase} worker={ worker}
            >
        </jka-timesheet>
        }
- 
+  {/* ontimesheet-closed={(ev: CustomEvent) =>this.toList(ev.detail) } */}
      </Host>
    );
  }
