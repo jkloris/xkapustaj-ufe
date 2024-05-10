@@ -69,11 +69,13 @@ export class JkaApp {
        ? <jka-employee-list 
         onemployee-clicked={(ev: CustomEvent) =>navigate('./timesheet/'+ ev.detail.id) }
         api-base={this.apiBase}
+        ambulance-id={this.ambulanceId}
            > 
          </jka-employee-list>
        : <jka-timesheet 
           ontimesheet-closed={() =>navigate('./list') }
           api-base={this.apiBase} worker={ worker}
+          ambulance-id={this.ambulanceId}
            >
        </jka-timesheet>
        }
