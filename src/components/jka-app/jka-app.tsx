@@ -1,5 +1,5 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
-import { iEmployee } from '../../models/iEmployee';
+
 declare global {
   interface Window { navigation: any; }
 }
@@ -17,7 +17,7 @@ export class JkaApp {
   @Prop() apiBase: string;
   @Prop() ambulanceId: string;
 
-  //TMP nav solution
+  private header:string = ""
 
   componentWillLoad() {
     const baseUri = new URL(this.basePath, document.baseURI || "/").pathname;
@@ -39,48 +39,45 @@ export class JkaApp {
     toRelative(location.pathname)
   }
 
- toTimesheet(employee: iEmployee) {
-   console.log(employee)
-  //  worker = employee
-  //  element = 'timesheet'
-   
- }
 
- toList(event:string){
-  console.log(event)
-  // this.element = 'list'
- }
+
+
 
  render() {
    let element = "list"
    let worker = ""
-   if ( this.relativePath.startsWith("worker/"))
+   this.header = "Hospital Emplyee List"
+   if ( this.relativePath.startsWith("timesheet/"))
    {
      element = "timesheet";
+     this.header = "Timesheet"
      worker = this.relativePath.split("/")[1]
    }
  
-  //  const navigate = (path:string) => {
-  //    const absolute = new URL(path, new URL(this.basePath, document.baseURI)).pathname;
-  //    window.navigation.navigate(absolute)
-  //  }
+   const navigate = (path:string) => {
+     const absolute = new URL(path, new URL(this.basePath, document.baseURI)).pathname;
+     console.log(absolute)
+     window.navigation.navigate(absolute)
+   }
  
    return (
      <Host>
-     {/* onemployee-clicked={(ev: CustomEvent) => this.toTimesheet(ev.detail) } */}
+      <div class="container">
+        <h1 style={{color: "#3e8baa"}}>{this.header}</h1>
+      
        { element === "list"
        ? <jka-employee-list 
-       
-       api-base={this.apiBase}
+        onemployee-clicked={(ev: CustomEvent) =>navigate('./timesheet/'+ ev.detail.id) }
+        api-base={this.apiBase}
            > 
          </jka-employee-list>
        : <jka-timesheet 
-      
-        api-base={this.apiBase} worker={ worker}
+          ontimesheet-closed={() =>navigate('./list') }
+          api-base={this.apiBase} worker={ worker}
            >
        </jka-timesheet>
        }
-  {/* ontimesheet-closed={(ev: CustomEvent) =>this.toList(ev.detail) } */}
+    </div>
      </Host>
    );
  }

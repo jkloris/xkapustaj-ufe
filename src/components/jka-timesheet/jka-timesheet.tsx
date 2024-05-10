@@ -1,4 +1,4 @@
-import { Component, Prop, State, h } from '@stencil/core';
+import { Component, EventEmitter, Prop, State, h, Event } from '@stencil/core';
 import { iEmployee } from '../../models/iEmployee';
 
 
@@ -9,7 +9,7 @@ import { iEmployee } from '../../models/iEmployee';
 })
 export class JkaTimesheet {
 
-  // @Event({eventName: "timesheet-closed"}) closed: EventEmitter<string>;
+  @Event({eventName: "timesheet-closed"}) closed: EventEmitter<string>;
 
 
   @Prop() worker: string = "";
@@ -20,6 +20,7 @@ export class JkaTimesheet {
   @State() employee: iEmployee = {
     name: "John Doe",
     jobTitle:  "Software Engineer",
+    id: "1",
     timesheet: [
       { date: '2022-01-01', hours: 8, description: 'Worked on project A' },
       { date: '2022-01-02', hours: 6, description: 'Worked on project B' },
@@ -37,7 +38,7 @@ export class JkaTimesheet {
   }
   render() {
     return (
-      <div>
+      <div class={"container"}>
         <md-list>
 
          <md-list-item >
@@ -52,29 +53,32 @@ export class JkaTimesheet {
             </md-list-item>
         </md-list>
 
-        <table> 
-          <thead>
 
-          <tr>
-            <th>Date</th>
-            <th>Hours</th>
-            <th>Description</th>
-          </tr>
-          </thead>
-          <tbody>
+        <div class="table-container">
+          <table> 
+            <thead>
 
-          {this.employee.timesheet.map(jobs => (
-            <tr class="grid-row">
-              <td>{jobs.date}</td>
-              <td>{jobs.hours}</td>
-              <td>{jobs.description}</td>
+            <tr>
+              <th>Date</th>
+              <th>Hours</th>
+              <th>Description</th>
             </tr>
-          ))}
-          </tbody>
-        </table>
-        {/* <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button> */}
-        <md-elevated-button>Add Task</md-elevated-button>
+            </thead>
+            <tbody>
 
+            {this.employee.timesheet.map(jobs => (
+              <tr class="grid-row">
+                <td>{jobs.date}</td>
+                <td>{jobs.hours}</td>
+                <td>{jobs.description}</td>
+              </tr>
+            ))}
+            </tbody>
+          </table>
+        </div>
+        <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button>
+        <md-elevated-button>Add Task</md-elevated-button>
+        <md-elevated-button>Delete Task</md-elevated-button>
       </div>
     );
   }
