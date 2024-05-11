@@ -53,12 +53,6 @@ export interface EmployeeListEntry {
      * @memberof EmployeeListEntry
      */
     'jobTitle': string;
-    /**
-     * Unique identifier of the timesheet
-     * @type {string}
-     * @memberof EmployeeListEntry
-     */
-    'timesheet': string;
 }
 /**
  * Describes the schedule of hospital employee
@@ -72,6 +66,12 @@ export interface Timesheet {
      * @memberof Timesheet
      */
     'id': string;
+    /**
+     * Unique identifier of the employee
+     * @type {string}
+     * @memberof Timesheet
+     */
+    'employeeId': string;
     /**
      * number of hours worked that day
      * @type {number}
@@ -91,6 +91,137 @@ export interface Timesheet {
      */
     'date': string;
 }
+
+/**
+ * JkaEmployeeApi - axios parameter creator
+ * @export
+ */
+export const JkaEmployeeApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * By using ambulanceId and employeeId you get employee
+         * @summary Provides the employee
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEmployee: async (ambulanceId: string, employeeId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ambulanceId' is not null or undefined
+            assertParamExists('getEmployee', 'ambulanceId', ambulanceId)
+            // verify required parameter 'employeeId' is not null or undefined
+            assertParamExists('getEmployee', 'employeeId', employeeId)
+            const localVarPath = `/employee-list/{ambulanceId}/entries/{employeeId}`
+                .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)))
+                .replace(`{${"employeeId"}}`, encodeURIComponent(String(employeeId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * JkaEmployeeApi - functional programming interface
+ * @export
+ */
+export const JkaEmployeeApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = JkaEmployeeApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * By using ambulanceId and employeeId you get employee
+         * @summary Provides the employee
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEmployee(ambulanceId: string, employeeId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EmployeeListEntry>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEmployee(ambulanceId, employeeId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * JkaEmployeeApi - factory interface
+ * @export
+ */
+export const JkaEmployeeApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = JkaEmployeeApiFp(configuration)
+    return {
+        /**
+         * By using ambulanceId and employeeId you get employee
+         * @summary Provides the employee
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEmployee(ambulanceId: string, employeeId: string, options?: any): AxiosPromise<EmployeeListEntry> {
+            return localVarFp.getEmployee(ambulanceId, employeeId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * JkaEmployeeApi - interface
+ * @export
+ * @interface JkaEmployeeApi
+ */
+export interface JkaEmployeeApiInterface {
+    /**
+     * By using ambulanceId and employeeId you get employee
+     * @summary Provides the employee
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} employeeId pass the id of the particular employee
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaEmployeeApiInterface
+     */
+    getEmployee(ambulanceId: string, employeeId: string, options?: AxiosRequestConfig): AxiosPromise<EmployeeListEntry>;
+
+}
+
+/**
+ * JkaEmployeeApi - object-oriented interface
+ * @export
+ * @class JkaEmployeeApi
+ * @extends {BaseAPI}
+ */
+export class JkaEmployeeApi extends BaseAPI implements JkaEmployeeApiInterface {
+    /**
+     * By using ambulanceId and employeeId you get employee
+     * @summary Provides the employee
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} employeeId pass the id of the particular employee
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaEmployeeApi
+     */
+    public getEmployee(ambulanceId: string, employeeId: string, options?: AxiosRequestConfig) {
+        return JkaEmployeeApiFp(this.configuration).getEmployee(ambulanceId, employeeId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 /**
  * JkaEmployeeListApi - axios parameter creator
@@ -222,21 +353,342 @@ export class JkaEmployeeListApi extends BaseAPI implements JkaEmployeeListApiInt
 export const JkaTimesheetApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * By using ambulanceId you get timesheet of employees in hospital
-         * @summary Provides the timesheet
+         * Use this method to add a new entry to the timesheet.
+         * @summary Adds a new timesheet entry
          * @param {string} ambulanceId pass the id of the particular ambulance
-         * @param {string} timesheetId pass the id of the particular timesheet
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {Timesheet} timesheet Timesheet entry to add
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEmployeeTimesheet: async (ambulanceId: string, timesheetId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        addNewTimesheetEntry: async (ambulanceId: string, employeeId: string, timesheet: Timesheet, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'ambulanceId' is not null or undefined
-            assertParamExists('getEmployeeTimesheet', 'ambulanceId', ambulanceId)
+            assertParamExists('addNewTimesheetEntry', 'ambulanceId', ambulanceId)
+            // verify required parameter 'employeeId' is not null or undefined
+            assertParamExists('addNewTimesheetEntry', 'employeeId', employeeId)
+            // verify required parameter 'timesheet' is not null or undefined
+            assertParamExists('addNewTimesheetEntry', 'timesheet', timesheet)
+            const localVarPath = `/timesheet/{ambulanceId}/employee/{employeeId}`
+                .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)))
+                .replace(`{${"employeeId"}}`, encodeURIComponent(String(employeeId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(timesheet, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Use this method to delete the specific entry from timesheet.
+         * @summary Deletes specific timesheet
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} timesheetId pass the id of the particular entry
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteTimesheetEntry: async (ambulanceId: string, timesheetId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ambulanceId' is not null or undefined
+            assertParamExists('deleteTimesheetEntry', 'ambulanceId', ambulanceId)
             // verify required parameter 'timesheetId' is not null or undefined
-            assertParamExists('getEmployeeTimesheet', 'timesheetId', timesheetId)
+            assertParamExists('deleteTimesheetEntry', 'timesheetId', timesheetId)
             const localVarPath = `/timesheet/{ambulanceId}/{timesheetId}`
                 .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)))
                 .replace(`{${"timesheetId"}}`, encodeURIComponent(String(timesheetId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Use this method to update content of timesheet.
+         * @summary Updates specific entry
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} timesheetId pass the id of the particular timesheet
+         * @param {Timesheet} timesheet Timesheey entry to update
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEmployeeTimesheet: async (ambulanceId: string, timesheetId: string, timesheet: Timesheet, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ambulanceId' is not null or undefined
+            assertParamExists('updateEmployeeTimesheet', 'ambulanceId', ambulanceId)
+            // verify required parameter 'timesheetId' is not null or undefined
+            assertParamExists('updateEmployeeTimesheet', 'timesheetId', timesheetId)
+            // verify required parameter 'timesheet' is not null or undefined
+            assertParamExists('updateEmployeeTimesheet', 'timesheet', timesheet)
+            const localVarPath = `/timesheet/{ambulanceId}/{timesheetId}`
+                .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)))
+                .replace(`{${"timesheetId"}}`, encodeURIComponent(String(timesheetId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(timesheet, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * JkaTimesheetApi - functional programming interface
+ * @export
+ */
+export const JkaTimesheetApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = JkaTimesheetApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Use this method to add a new entry to the timesheet.
+         * @summary Adds a new timesheet entry
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {Timesheet} timesheet Timesheet entry to add
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addNewTimesheetEntry(ambulanceId: string, employeeId: string, timesheet: Timesheet, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Timesheet>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addNewTimesheetEntry(ambulanceId, employeeId, timesheet, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Use this method to delete the specific entry from timesheet.
+         * @summary Deletes specific timesheet
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} timesheetId pass the id of the particular entry
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteTimesheetEntry(ambulanceId: string, timesheetId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTimesheetEntry(ambulanceId, timesheetId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Use this method to update content of timesheet.
+         * @summary Updates specific entry
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} timesheetId pass the id of the particular timesheet
+         * @param {Timesheet} timesheet Timesheey entry to update
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEmployeeTimesheet(ambulanceId: string, timesheetId: string, timesheet: Timesheet, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Timesheet>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEmployeeTimesheet(ambulanceId, timesheetId, timesheet, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * JkaTimesheetApi - factory interface
+ * @export
+ */
+export const JkaTimesheetApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = JkaTimesheetApiFp(configuration)
+    return {
+        /**
+         * Use this method to add a new entry to the timesheet.
+         * @summary Adds a new timesheet entry
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {Timesheet} timesheet Timesheet entry to add
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addNewTimesheetEntry(ambulanceId: string, employeeId: string, timesheet: Timesheet, options?: any): AxiosPromise<Timesheet> {
+            return localVarFp.addNewTimesheetEntry(ambulanceId, employeeId, timesheet, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Use this method to delete the specific entry from timesheet.
+         * @summary Deletes specific timesheet
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} timesheetId pass the id of the particular entry
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteTimesheetEntry(ambulanceId: string, timesheetId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteTimesheetEntry(ambulanceId, timesheetId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Use this method to update content of timesheet.
+         * @summary Updates specific entry
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} timesheetId pass the id of the particular timesheet
+         * @param {Timesheet} timesheet Timesheey entry to update
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEmployeeTimesheet(ambulanceId: string, timesheetId: string, timesheet: Timesheet, options?: any): AxiosPromise<Timesheet> {
+            return localVarFp.updateEmployeeTimesheet(ambulanceId, timesheetId, timesheet, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * JkaTimesheetApi - interface
+ * @export
+ * @interface JkaTimesheetApi
+ */
+export interface JkaTimesheetApiInterface {
+    /**
+     * Use this method to add a new entry to the timesheet.
+     * @summary Adds a new timesheet entry
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} employeeId pass the id of the particular employee
+     * @param {Timesheet} timesheet Timesheet entry to add
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaTimesheetApiInterface
+     */
+    addNewTimesheetEntry(ambulanceId: string, employeeId: string, timesheet: Timesheet, options?: AxiosRequestConfig): AxiosPromise<Timesheet>;
+
+    /**
+     * Use this method to delete the specific entry from timesheet.
+     * @summary Deletes specific timesheet
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} timesheetId pass the id of the particular entry
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaTimesheetApiInterface
+     */
+    deleteTimesheetEntry(ambulanceId: string, timesheetId: string, options?: AxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Use this method to update content of timesheet.
+     * @summary Updates specific entry
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} timesheetId pass the id of the particular timesheet
+     * @param {Timesheet} timesheet Timesheey entry to update
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaTimesheetApiInterface
+     */
+    updateEmployeeTimesheet(ambulanceId: string, timesheetId: string, timesheet: Timesheet, options?: AxiosRequestConfig): AxiosPromise<Timesheet>;
+
+}
+
+/**
+ * JkaTimesheetApi - object-oriented interface
+ * @export
+ * @class JkaTimesheetApi
+ * @extends {BaseAPI}
+ */
+export class JkaTimesheetApi extends BaseAPI implements JkaTimesheetApiInterface {
+    /**
+     * Use this method to add a new entry to the timesheet.
+     * @summary Adds a new timesheet entry
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} employeeId pass the id of the particular employee
+     * @param {Timesheet} timesheet Timesheet entry to add
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaTimesheetApi
+     */
+    public addNewTimesheetEntry(ambulanceId: string, employeeId: string, timesheet: Timesheet, options?: AxiosRequestConfig) {
+        return JkaTimesheetApiFp(this.configuration).addNewTimesheetEntry(ambulanceId, employeeId, timesheet, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Use this method to delete the specific entry from timesheet.
+     * @summary Deletes specific timesheet
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} timesheetId pass the id of the particular entry
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaTimesheetApi
+     */
+    public deleteTimesheetEntry(ambulanceId: string, timesheetId: string, options?: AxiosRequestConfig) {
+        return JkaTimesheetApiFp(this.configuration).deleteTimesheetEntry(ambulanceId, timesheetId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Use this method to update content of timesheet.
+     * @summary Updates specific entry
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {string} timesheetId pass the id of the particular timesheet
+     * @param {Timesheet} timesheet Timesheey entry to update
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaTimesheetApi
+     */
+    public updateEmployeeTimesheet(ambulanceId: string, timesheetId: string, timesheet: Timesheet, options?: AxiosRequestConfig) {
+        return JkaTimesheetApiFp(this.configuration).updateEmployeeTimesheet(ambulanceId, timesheetId, timesheet, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * JkaTimesheetsApi - axios parameter creator
+ * @export
+ */
+export const JkaTimesheetsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * By using ambulanceId you get timesheet of employees in hospital
+         * @summary Provides the timesheet
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {string} employeeId pass the id of the particular employee
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEmployeeTimesheet: async (ambulanceId: string, employeeId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ambulanceId' is not null or undefined
+            assertParamExists('getEmployeeTimesheet', 'ambulanceId', ambulanceId)
+            // verify required parameter 'employeeId' is not null or undefined
+            assertParamExists('getEmployeeTimesheet', 'employeeId', employeeId)
+            const localVarPath = `/timesheet/{ambulanceId}/employee/{employeeId}`
+                .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)))
+                .replace(`{${"employeeId"}}`, encodeURIComponent(String(employeeId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -263,85 +715,85 @@ export const JkaTimesheetApiAxiosParamCreator = function (configuration?: Config
 };
 
 /**
- * JkaTimesheetApi - functional programming interface
+ * JkaTimesheetsApi - functional programming interface
  * @export
  */
-export const JkaTimesheetApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = JkaTimesheetApiAxiosParamCreator(configuration)
+export const JkaTimesheetsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = JkaTimesheetsApiAxiosParamCreator(configuration)
     return {
         /**
          * By using ambulanceId you get timesheet of employees in hospital
          * @summary Provides the timesheet
          * @param {string} ambulanceId pass the id of the particular ambulance
-         * @param {string} timesheetId pass the id of the particular timesheet
+         * @param {string} employeeId pass the id of the particular employee
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEmployeeTimesheet(ambulanceId: string, timesheetId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Timesheet>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEmployeeTimesheet(ambulanceId, timesheetId, options);
+        async getEmployeeTimesheet(ambulanceId: string, employeeId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Timesheet>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEmployeeTimesheet(ambulanceId, employeeId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
 };
 
 /**
- * JkaTimesheetApi - factory interface
+ * JkaTimesheetsApi - factory interface
  * @export
  */
-export const JkaTimesheetApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = JkaTimesheetApiFp(configuration)
+export const JkaTimesheetsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = JkaTimesheetsApiFp(configuration)
     return {
         /**
          * By using ambulanceId you get timesheet of employees in hospital
          * @summary Provides the timesheet
          * @param {string} ambulanceId pass the id of the particular ambulance
-         * @param {string} timesheetId pass the id of the particular timesheet
+         * @param {string} employeeId pass the id of the particular employee
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEmployeeTimesheet(ambulanceId: string, timesheetId: string, options?: any): AxiosPromise<Array<Timesheet>> {
-            return localVarFp.getEmployeeTimesheet(ambulanceId, timesheetId, options).then((request) => request(axios, basePath));
+        getEmployeeTimesheet(ambulanceId: string, employeeId: string, options?: any): AxiosPromise<Array<Timesheet>> {
+            return localVarFp.getEmployeeTimesheet(ambulanceId, employeeId, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * JkaTimesheetApi - interface
+ * JkaTimesheetsApi - interface
  * @export
- * @interface JkaTimesheetApi
+ * @interface JkaTimesheetsApi
  */
-export interface JkaTimesheetApiInterface {
+export interface JkaTimesheetsApiInterface {
     /**
      * By using ambulanceId you get timesheet of employees in hospital
      * @summary Provides the timesheet
      * @param {string} ambulanceId pass the id of the particular ambulance
-     * @param {string} timesheetId pass the id of the particular timesheet
+     * @param {string} employeeId pass the id of the particular employee
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof JkaTimesheetApiInterface
+     * @memberof JkaTimesheetsApiInterface
      */
-    getEmployeeTimesheet(ambulanceId: string, timesheetId: string, options?: AxiosRequestConfig): AxiosPromise<Array<Timesheet>>;
+    getEmployeeTimesheet(ambulanceId: string, employeeId: string, options?: AxiosRequestConfig): AxiosPromise<Array<Timesheet>>;
 
 }
 
 /**
- * JkaTimesheetApi - object-oriented interface
+ * JkaTimesheetsApi - object-oriented interface
  * @export
- * @class JkaTimesheetApi
+ * @class JkaTimesheetsApi
  * @extends {BaseAPI}
  */
-export class JkaTimesheetApi extends BaseAPI implements JkaTimesheetApiInterface {
+export class JkaTimesheetsApi extends BaseAPI implements JkaTimesheetsApiInterface {
     /**
      * By using ambulanceId you get timesheet of employees in hospital
      * @summary Provides the timesheet
      * @param {string} ambulanceId pass the id of the particular ambulance
-     * @param {string} timesheetId pass the id of the particular timesheet
+     * @param {string} employeeId pass the id of the particular employee
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof JkaTimesheetApi
+     * @memberof JkaTimesheetsApi
      */
-    public getEmployeeTimesheet(ambulanceId: string, timesheetId: string, options?: AxiosRequestConfig) {
-        return JkaTimesheetApiFp(this.configuration).getEmployeeTimesheet(ambulanceId, timesheetId, options).then((request) => request(this.axios, this.basePath));
+    public getEmployeeTimesheet(ambulanceId: string, employeeId: string, options?: AxiosRequestConfig) {
+        return JkaTimesheetsApiFp(this.configuration).getEmployeeTimesheet(ambulanceId, employeeId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Prop, State, h, Event } from '@stencil/core';
-import { iEmployee } from '../../models/iEmployee';
-import { iTimesheet } from '../../models/iTimesheet';
-import { JkaTimesheetApiFactory, Timesheet} from '../../api/xkapustaj-wl';
+import {JkaTimesheetsApiFactory,  Timesheet, EmployeeListEntry, JkaEmployeeApiFactory, JkaTimesheetApiFactory} from '../../api/xkapustaj-wl';
 
 @Component({
   tag: 'jka-timesheet',
@@ -19,36 +17,48 @@ export class JkaTimesheet {
   @Prop() apiBase: string;
   @State() errorMessage: string;
 
-  @State() employee: iEmployee = {
-    name: "John Doe",
-    jobTitle:  "Software Engineer",
-    id: "1",
-    timesheet: '1'
-  
+  private employee: EmployeeListEntry;
+
+  private timesheet: Timesheet[] =[ ]  
+  @State() selectedTimesheet: Timesheet = null;
+
+
+  private selectTimesheet(timesheet: Timesheet) {
+    if(this.selectedTimesheet != null && this.selectedTimesheet.id == timesheet.id) {
+      this.selectedTimesheet = null
+      return
+    }
+    this.selectedTimesheet = timesheet
   }
 
-  timesheet: iTimesheet[] =[
-    // { id: "1", date: '2022-01-01', hours: 8, description: 'Worked on project A' },
-    // { id: "1", date: '2022-01-02', hours: 6, description: 'Worked on project B' },
-    // { id: "1", date: '2022-01-03', hours: 10, description: 'Worked on project C' },
-    // { id: "1", date: '2022-01-04', hours: 4, description: 'Worked on project D' },
-    // { id: "1", date: '2022-01-05', hours: 12, description: 'Worked on project E' }, 
-    // { id: "1", date: '2022-01-06', hours: 8, description: 'Worked on project F' },
-    // { id: "1", date: '2022-01-07', hours: 6, description: 'Worked on project G' },
-    // { id: "1", date: '2022-01-08', hours: 10, description: 'Worked on project H' },
-    // { id: "1", date: '2022-01-09', hours: 4, description: 'Worked on project I' },
-    // { id: "1", date: '2022-01-10', hours: 12, description: 'Worked on project J' },
-
-  ]  
   async componentWillLoad() {
+    console.log(this.worker)
     this.timesheet = [...await this.getTimesheet()];
+    this.employee = await this.getEmployee();
+  }
+
+  private async getEmployee(): Promise<EmployeeListEntry> {
+    try {
+      const response = await
+      JkaEmployeeApiFactory(undefined, this.apiBase).
+          getEmployee(this.ambulanceId, this.worker)
+      if (response.status < 299) {
+        return response.data;
+      } else {
+        this.errorMessage = `Cannot retrieve employee: ${response.statusText}`
+      }
+    } catch (err: any) {
+      this.errorMessage = `Cannot retrieve employee: ${err.message || "unknown"}`
+    }
+    return {} as EmployeeListEntry;
+
   }
 
   private async getTimesheet(): Promise<Timesheet[]> {
     try {
       const response = await
-        JkaTimesheetApiFactory(undefined, this.apiBase).
-          getEmployeeTimesheet(this.ambulanceId, this.employee.id)
+      JkaTimesheetsApiFactory(undefined, this.apiBase).
+          getEmployeeTimesheet(this.ambulanceId,this.worker)
       if (response.status < 299) {
         return response.data;
       } else {
@@ -60,11 +70,89 @@ export class JkaTimesheet {
     return [];
   }
 
+  private async deleteTimesheetEntry(id: string) {
+    try {
+       const response = await JkaTimesheetApiFactory(undefined, this.apiBase)
+          .deleteTimesheetEntry(this.ambulanceId, id)
+       if (response.status < 299) {
+        this.selectedTimesheet = null
+        this.timesheet = [...await this.getTimesheet()];
+       } else {
+       this.errorMessage = `Cannot delete entry: ${response.statusText}`
+       }
+    } catch (err: any) {
+       this.errorMessage = `Cannot delete entry: ${err.message || "unknown"}`
+    }
+ }
+
+ private async updateTimesheetEntry(id: string) {
+  try {
+    console.log(this.selectedTimesheet) 
+     const response = await JkaTimesheetApiFactory(undefined, this.apiBase)
+        .updateEmployeeTimesheet(this.ambulanceId, id, this.selectedTimesheet)
+     if (response.status < 299) {
+      this.selectedTimesheet = null
+      this.timesheet = [...await this.getTimesheet()];
+     } else {
+     this.errorMessage = `Cannot delete entry: ${response.statusText}`
+     }
+  } catch (err: any) {
+     this.errorMessage = `Cannot delete entry: ${err.message || "unknown"}`
+  }
+}
+
+private async addTimesheetEntry() {
+  try {
+    console.log(this.selectedTimesheet) 
+     const response = await JkaTimesheetApiFactory(undefined, this.apiBase)
+        .addNewTimesheetEntry(this.ambulanceId, this.worker, this.selectedTimesheet)
+     if (response.status < 299) {
+      this.selectedTimesheet = null
+      this.timesheet = [...await this.getTimesheet()];
+     } else {
+     this.errorMessage = `Cannot delete entry: ${response.statusText}`
+     }
+  } catch (err: any) {
+     this.errorMessage = `Cannot delete entry: ${err.message || "unknown"}`
+  }
+}
+
+ private formatDate(date: string) {
+   const d = new Date(date);
+   return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+
+ }
+
+ private reformatDate(date:string){
+   const d = new Date(date);
+   return d.toISOString()
+ }
+ 
+ private handleInput(event: Event, flag: InputAtt) {
+  switch (flag) {
+    case InputAtt.date:
+      this.selectedTimesheet.date = this.reformatDate((event.target as HTMLInputElement).value)
+      break
+    case InputAtt.hours:
+      this.selectedTimesheet.hours = parseInt((event.target as HTMLInputElement).value, 0);
+      break
+    case InputAtt.description:
+      this.selectedTimesheet.description = (event.target as HTMLInputElement).value
+      break;
+  
+    default:
+      break;
+  }
+    console.log(this.selectedTimesheet)
+ }
   render() {
     return (
       <div class={"container"}>
-        
-        <md-list>
+        <div class={"header-container"}>
+          <h3>{this.employee.name} | {this.employee.jobTitle}</h3>
+          <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button>
+        </div>
+        {/* <md-list>
 
          <md-list-item >
               <div slot='headline'>Name: </div>
@@ -76,7 +164,7 @@ export class JkaTimesheet {
 
               <div slot='supporting-text'> {this.employee.jobTitle}</div>
             </md-list-item>
-        </md-list>
+        </md-list> */}
 
         {
         this.errorMessage
@@ -95,8 +183,8 @@ export class JkaTimesheet {
               <tbody>
 
               {this.timesheet.map(jobs => (
-                <tr class="grid-row">
-                  <td>{jobs.date}</td>
+                <tr class={{"grid-row": true, "selected": this.selectedTimesheet?.id === jobs.id}} on-click={() => this.selectTimesheet(jobs)}>
+                  <td >{jobs.date}</td>
                   <td>{jobs.hours}</td>
                   <td>{jobs.description}</td>
                 </tr>
@@ -105,10 +193,49 @@ export class JkaTimesheet {
             </table>
           </div>
         }
-        <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button>
-        <md-elevated-button>Add Task</md-elevated-button>
-        <md-elevated-button>Delete Task</md-elevated-button>
-      </div>
+        
+       { this.selectedTimesheet?
+          <div class={"edit-container"} style={{"box-shadow": "1px 2px 5px 0px #0000008f"}}>
+            <md-filled-text-field
+                type="date"
+                label="Date"
+                value={this.formatDate(this.selectedTimesheet.date)}
+                onInput={(event: Event) => this.handleInput(event, InputAtt.date)}
+              ></md-filled-text-field>
+              <md-filled-text-field
+                type="number"
+                label="Hours"
+                value={this.selectedTimesheet.hours.toString()}
+                onInput={(event: Event) => this.handleInput(event, InputAtt.hours)}
+              ></md-filled-text-field>
+              <md-filled-text-field
+                label="Description"
+                value={this.selectedTimesheet.description}
+                onInput={(event: Event) => this.handleInput(event, InputAtt.description)}
+              ></md-filled-text-field>
+        </div>
+        :
+        <div></div>
+        }
+        
+
+
+        
+        { this.selectedTimesheet? 
+        <div class={"edit-container"}>
+          <md-elevated-button on-click={() => this.updateTimesheetEntry(this.selectedTimesheet.id)}>Update Task</md-elevated-button>
+          <md-elevated-button class="add-btn"  on-click={() => this.addTimesheetEntry()}>Add Task</md-elevated-button>
+          <md-elevated-button class="delete-btn" on-click={() => this.deleteTimesheetEntry(this.selectedTimesheet.id)} >Delete Task</md-elevated-button>
+        </div>
+          : <div></div>
+        }
+        </div>
     );
   }
+}
+
+enum InputAtt {
+  date = "DATE",
+  hours = "HOURS",
+  description = "DESCRIPTION"
 }

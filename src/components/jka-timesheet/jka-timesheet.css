@@ -59,3 +59,38 @@ md-elevated-button{
 .container{
   height: 100%;
 }
+
+.edit-container{
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.5em 0em;
+  flex-wrap: nowrap;
+  /* background-color: #3e8baa6b; */
+}
+
+.edit-container md-filled-text-field{
+  width: 30%;
+}
+
+.selected{
+  background-color: #fffd9d;
+}
+.header-container{
+  display: flex;
+  justify-content: space-between;
+}
+
+md-elevated-button{
+  --md-elevated-button-container-shape: 5px;
+  --md-sys-color-primary: #3e8baa;
+}
+
+.add-btn{
+  --md-sys-color-surface-container-low: #adffb6;
+  --md-sys-color-primary: #000000;
+}
+
+.delete-btn{
+  --md-sys-color-surface-container-low: #f57070;
+  --md-sys-color-primary: #ffffff;
+}
