@@ -19,7 +19,7 @@ export class JkaTimesheet {
 
   private employee: EmployeeListEntry;
 
-  private timesheet: Timesheet[] =[ ]  
+  @State() timesheet: Timesheet[] =[ ]  
   @State() selectedTimesheet: Timesheet = null;
 
 
