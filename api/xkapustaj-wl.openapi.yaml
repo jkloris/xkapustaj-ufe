@@ -442,7 +442,7 @@ components:
         employeeId: "x321ab3"
       - id: "12322"
         hours: 5
-        description: "Driving and ambulance1"
+        description: "Driving and ambulance"
         date:  "2023-12-25T10:35:00Z"
         employeeId: "x321ab3"
       - id: "12323"

@@ -40,7 +40,41 @@ export class JkaApp {
   }
 
 
-
+  renderComponent(worker: string, element: string, navigate: Function) {
+    switch (element) {
+      case "list":
+        return (
+          <jka-employee-list 
+            onemployee-clicked={(ev: CustomEvent) => navigate('./timesheet/' + ev.detail.id)}
+            api-base={this.apiBase}
+            ambulance-id={this.ambulanceId}
+          ></jka-employee-list>
+        );
+      case "timesheet":
+        return (
+          <jka-timesheet 
+            ontimesheet-closed={() => navigate('./list')}
+            ontimesheet-personal={(ev: CustomEvent) => navigate('./personal/'+ev.detail)}
+            
+            api-base={this.apiBase} 
+            worker={worker}
+            ambulance-id={this.ambulanceId}
+          ></jka-timesheet>
+        );
+        case "personal":
+          return (
+            <jka-personal-page 
+              onpersonal-closed={(ev: CustomEvent) => navigate('./timesheet/'+ev.detail)}
+              api-base={this.apiBase} 
+              worker={worker}
+              ambulance-id={this.ambulanceId}
+            ></jka-personal-page>
+          );
+      default:
+        return null; // Or render a default component if needed
+    }
+  }
+  
 
 
  render() {
@@ -52,6 +86,11 @@ export class JkaApp {
      element = "timesheet";
      this.header = "Timesheet"
      worker = this.relativePath.split("/")[1]
+   }else if ( this.relativePath.startsWith("personal/"))
+   {
+     element = "personal";
+     this.header = "Personal Overview"
+     worker = this.relativePath.split("/")[1]
    }
  
    const navigate = (path:string) => {
@@ -60,25 +99,14 @@ export class JkaApp {
      window.navigation.navigate(absolute)
    }
  
+
+   
    return (
      <Host>
       <div class="container">
         <h1 style={{color: "#3e8baa"}}>{this.header}</h1>
       
-       { element === "list"
-       ? <jka-employee-list 
-        onemployee-clicked={(ev: CustomEvent) =>navigate('./timesheet/'+ ev.detail.id) }
-        api-base={this.apiBase}
-        ambulance-id={this.ambulanceId}
-           > 
-         </jka-employee-list>
-       : <jka-timesheet 
-          ontimesheet-closed={() =>navigate('./list') }
-          api-base={this.apiBase} worker={ worker}
-          ambulance-id={this.ambulanceId}
-           >
-       </jka-timesheet>
-       }
+        {this.renderComponent(worker, element, navigate)}
     </div>
      </Host>
    );

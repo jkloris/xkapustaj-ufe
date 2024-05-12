@@ -9,6 +9,7 @@ import {JkaTimesheetsApiFactory,  Timesheet, EmployeeListEntry, JkaEmployeeApiFa
 export class JkaTimesheet {
 
   @Event({eventName: "timesheet-closed"}) closed: EventEmitter<string>;
+  @Event({eventName: "timesheet-personal"}) personal: EventEmitter<string>;
 
 
   @Prop() worker: string = "";
@@ -127,6 +128,16 @@ private async addTimesheetEntry() {
    const d = new Date(date);
    return d.toISOString()
  }
+
+ private formatBeautyDate(date: string) {
+   const d = new Date(date);
+   return d.toLocaleDateString( )
+ }
+
+ private isJobDone(date: string) {
+   const d = new Date(date);
+   return d < new Date();
+ }
  
  private handleInput(event: Event, flag: InputAtt) {
   if(this.selectedTimesheet == null) {
@@ -156,6 +167,7 @@ private async addTimesheetEntry() {
       <div class={"container"}>
         <div class={"header-container"}>
           <h3>{this.employee.name} | {this.employee.jobTitle}</h3>
+          <md-elevated-button  on-click={() => this.personal.emit(this.worker)}  >To Personal Overview</md-elevated-button>
           <md-elevated-button  on-click={() => this.closed.emit("close")}  >Back</md-elevated-button>
         </div>
         {/* <md-list>
@@ -184,15 +196,17 @@ private async addTimesheetEntry() {
               <th>Date</th>
               <th>Hours</th>
               <th>Description</th>
+              <th>Done</th>
             </tr>
             </thead>
             <tbody>
 
             {this.timesheet.map(jobs => (
               <tr class={{"grid-row": true, "selected": this.selectedTimesheet?.id === jobs.id}} on-click={() => this.selectTimesheet(jobs)}>
-                <td >{this.formatDate(jobs.date)}</td>
+                <td >{this.formatBeautyDate(jobs.date)}</td>
                 <td>{jobs.hours}</td>
                 <td>{jobs.description}</td>
+                <td>{this.isJobDone(jobs.date)? "Yes": "No"}</td>
               </tr>
             ))}
             </tbody>
