@@ -55,6 +55,43 @@ export interface EmployeeListEntry {
     'jobTitle': string;
 }
 /**
+ * 
+ * @export
+ * @interface Hospital
+ */
+export interface Hospital {
+    /**
+     * Unique identifier of the hospital
+     * @type {string}
+     * @memberof Hospital
+     */
+    'id': string;
+    /**
+     * Human readable display name of the ambulance
+     * @type {string}
+     * @memberof Hospital
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Hospital
+     */
+    'address': string;
+    /**
+     * 
+     * @type {Array<EmployeeListEntry>}
+     * @memberof Hospital
+     */
+    'employees'?: Array<EmployeeListEntry>;
+    /**
+     * 
+     * @type {Array<Timesheet>}
+     * @memberof Hospital
+     */
+    'timesheets'?: Array<Timesheet>;
+}
+/**
  * Describes the schedule of hospital employee
  * @export
  * @interface Timesheet
@@ -91,6 +128,208 @@ export interface Timesheet {
      */
     'date': string;
 }
+
+/**
+ * HospitalsApi - axios parameter creator
+ * @export
+ */
+export const HospitalsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Use this method to initialize new hospital in the system
+         * @summary Saves new hospital definition
+         * @param {Hospital} hospital Hospital details to store
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createHospital: async (hospital: Hospital, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'hospital' is not null or undefined
+            assertParamExists('createHospital', 'hospital', hospital)
+            const localVarPath = `/hospital`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(hospital, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Use this method to delete the specific hospital from the system.
+         * @summary Deletes specific hospital
+         * @param {string} ambulanceId pass the id of the particular hospital
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteHospital: async (ambulanceId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ambulanceId' is not null or undefined
+            assertParamExists('deleteHospital', 'ambulanceId', ambulanceId)
+            const localVarPath = `/hospital/{ambulanceId}`
+                .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * HospitalsApi - functional programming interface
+ * @export
+ */
+export const HospitalsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = HospitalsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Use this method to initialize new hospital in the system
+         * @summary Saves new hospital definition
+         * @param {Hospital} hospital Hospital details to store
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createHospital(hospital: Hospital, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Hospital>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createHospital(hospital, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Use this method to delete the specific hospital from the system.
+         * @summary Deletes specific hospital
+         * @param {string} ambulanceId pass the id of the particular hospital
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteHospital(ambulanceId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteHospital(ambulanceId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * HospitalsApi - factory interface
+ * @export
+ */
+export const HospitalsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = HospitalsApiFp(configuration)
+    return {
+        /**
+         * Use this method to initialize new hospital in the system
+         * @summary Saves new hospital definition
+         * @param {Hospital} hospital Hospital details to store
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createHospital(hospital: Hospital, options?: any): AxiosPromise<Hospital> {
+            return localVarFp.createHospital(hospital, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Use this method to delete the specific hospital from the system.
+         * @summary Deletes specific hospital
+         * @param {string} ambulanceId pass the id of the particular hospital
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteHospital(ambulanceId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteHospital(ambulanceId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * HospitalsApi - interface
+ * @export
+ * @interface HospitalsApi
+ */
+export interface HospitalsApiInterface {
+    /**
+     * Use this method to initialize new hospital in the system
+     * @summary Saves new hospital definition
+     * @param {Hospital} hospital Hospital details to store
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof HospitalsApiInterface
+     */
+    createHospital(hospital: Hospital, options?: AxiosRequestConfig): AxiosPromise<Hospital>;
+
+    /**
+     * Use this method to delete the specific hospital from the system.
+     * @summary Deletes specific hospital
+     * @param {string} ambulanceId pass the id of the particular hospital
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof HospitalsApiInterface
+     */
+    deleteHospital(ambulanceId: string, options?: AxiosRequestConfig): AxiosPromise<void>;
+
+}
+
+/**
+ * HospitalsApi - object-oriented interface
+ * @export
+ * @class HospitalsApi
+ * @extends {BaseAPI}
+ */
+export class HospitalsApi extends BaseAPI implements HospitalsApiInterface {
+    /**
+     * Use this method to initialize new hospital in the system
+     * @summary Saves new hospital definition
+     * @param {Hospital} hospital Hospital details to store
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof HospitalsApi
+     */
+    public createHospital(hospital: Hospital, options?: AxiosRequestConfig) {
+        return HospitalsApiFp(this.configuration).createHospital(hospital, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Use this method to delete the specific hospital from the system.
+     * @summary Deletes specific hospital
+     * @param {string} ambulanceId pass the id of the particular hospital
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof HospitalsApi
+     */
+    public deleteHospital(ambulanceId: string, options?: AxiosRequestConfig) {
+        return HospitalsApiFp(this.configuration).deleteHospital(ambulanceId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
 
 /**
  * JkaEmployeeApi - axios parameter creator
@@ -230,6 +469,46 @@ export class JkaEmployeeApi extends BaseAPI implements JkaEmployeeApiInterface {
 export const JkaEmployeeListApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Use this method to add new employee to the list
+         * @summary Add  new employee
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {EmployeeListEntry} employeeListEntry Hospital details to store
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addNewEmployee: async (ambulanceId: string, employeeListEntry: EmployeeListEntry, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ambulanceId' is not null or undefined
+            assertParamExists('addNewEmployee', 'ambulanceId', ambulanceId)
+            // verify required parameter 'employeeListEntry' is not null or undefined
+            assertParamExists('addNewEmployee', 'employeeListEntry', employeeListEntry)
+            const localVarPath = `/employee-list/{ambulanceId}/entries`
+                .replace(`{${"ambulanceId"}}`, encodeURIComponent(String(ambulanceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(employeeListEntry, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * By using ambulanceId you get list of employees in hospital
          * @summary Provides the ambulance waiting list
          * @param {string} ambulanceId pass the id of the particular ambulance
@@ -274,6 +553,18 @@ export const JkaEmployeeListApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = JkaEmployeeListApiAxiosParamCreator(configuration)
     return {
         /**
+         * Use this method to add new employee to the list
+         * @summary Add  new employee
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {EmployeeListEntry} employeeListEntry Hospital details to store
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addNewEmployee(ambulanceId: string, employeeListEntry: EmployeeListEntry, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EmployeeListEntry>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addNewEmployee(ambulanceId, employeeListEntry, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * By using ambulanceId you get list of employees in hospital
          * @summary Provides the ambulance waiting list
          * @param {string} ambulanceId pass the id of the particular ambulance
@@ -295,6 +586,17 @@ export const JkaEmployeeListApiFactory = function (configuration?: Configuration
     const localVarFp = JkaEmployeeListApiFp(configuration)
     return {
         /**
+         * Use this method to add new employee to the list
+         * @summary Add  new employee
+         * @param {string} ambulanceId pass the id of the particular ambulance
+         * @param {EmployeeListEntry} employeeListEntry Hospital details to store
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addNewEmployee(ambulanceId: string, employeeListEntry: EmployeeListEntry, options?: any): AxiosPromise<EmployeeListEntry> {
+            return localVarFp.addNewEmployee(ambulanceId, employeeListEntry, options).then((request) => request(axios, basePath));
+        },
+        /**
          * By using ambulanceId you get list of employees in hospital
          * @summary Provides the ambulance waiting list
          * @param {string} ambulanceId pass the id of the particular ambulance
@@ -314,6 +616,17 @@ export const JkaEmployeeListApiFactory = function (configuration?: Configuration
  */
 export interface JkaEmployeeListApiInterface {
     /**
+     * Use this method to add new employee to the list
+     * @summary Add  new employee
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {EmployeeListEntry} employeeListEntry Hospital details to store
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaEmployeeListApiInterface
+     */
+    addNewEmployee(ambulanceId: string, employeeListEntry: EmployeeListEntry, options?: AxiosRequestConfig): AxiosPromise<EmployeeListEntry>;
+
+    /**
      * By using ambulanceId you get list of employees in hospital
      * @summary Provides the ambulance waiting list
      * @param {string} ambulanceId pass the id of the particular ambulance
@@ -332,6 +645,19 @@ export interface JkaEmployeeListApiInterface {
  * @extends {BaseAPI}
  */
 export class JkaEmployeeListApi extends BaseAPI implements JkaEmployeeListApiInterface {
+    /**
+     * Use this method to add new employee to the list
+     * @summary Add  new employee
+     * @param {string} ambulanceId pass the id of the particular ambulance
+     * @param {EmployeeListEntry} employeeListEntry Hospital details to store
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof JkaEmployeeListApi
+     */
+    public addNewEmployee(ambulanceId: string, employeeListEntry: EmployeeListEntry, options?: AxiosRequestConfig) {
+        return JkaEmployeeListApiFp(this.configuration).addNewEmployee(ambulanceId, employeeListEntry, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * By using ambulanceId you get list of employees in hospital
      * @summary Provides the ambulance waiting list
