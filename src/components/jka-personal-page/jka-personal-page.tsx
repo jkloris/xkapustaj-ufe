@@ -26,7 +26,6 @@ export class JkaPersonalPage {
 
 
   async componentWillLoad() {
-    console.log(this.worker)
     this.timesheet = [...await this.getTimesheet()];
     this.employee = await this.getEmployee();
     this.aggregateTimesheets(this.timesheet)
@@ -92,7 +91,6 @@ export class JkaPersonalPage {
       
       result.push({ description, totalHours, doneHours });
     }
-    console.log(result)
     return result;
   }
 
