@@ -94,10 +94,10 @@ export class JkaTimesheet {
       this.selectedTimesheet = null
       this.timesheet = [...await this.getTimesheet()];
      } else {
-     this.errorMessage = `Cannot delete entry: ${response.statusText}`
+     this.errorMessage = `Cannot update entry: ${response.statusText}`
      }
   } catch (err: any) {
-     this.errorMessage = `Cannot delete entry: ${err.message || "unknown"}`
+     this.errorMessage = `Cannot update entry: ${err.message || "unknown"}`
   }
 }
 
@@ -110,10 +110,10 @@ private async addTimesheetEntry() {
       this.selectedTimesheet = null
       this.timesheet = [...await this.getTimesheet()];
      } else {
-     this.errorMessage = `Cannot delete entry: ${response.statusText}`
+     this.errorMessage = `Cannot add entry: ${response.statusText}`
      }
   } catch (err: any) {
-     this.errorMessage = `Cannot delete entry: ${err.message || "unknown"}`
+     this.errorMessage = `Cannot add entry: ${err.message || "unknown"}`
   }
 }
 
@@ -129,6 +129,11 @@ private async addTimesheetEntry() {
  }
  
  private handleInput(event: Event, flag: InputAtt) {
+  if(this.selectedTimesheet == null) {
+    this.selectedTimesheet = {} as Timesheet
+    this.selectedTimesheet.id = "-1"
+  }
+  
   switch (flag) {
     case InputAtt.date:
       this.selectedTimesheet.date = this.reformatDate((event.target as HTMLInputElement).value)
@@ -169,30 +174,30 @@ private async addTimesheetEntry() {
         {
         this.errorMessage
           ? <div class="error">{this.errorMessage}</div>
-        :
-          <div class="table-container">
-            <table> 
-              <thead>
+        : <div></div>}
+        <div class="table-container">
+          <table> 
+            <thead>
 
-              <tr>
-                <th>Date</th>
-                <th>Hours</th>
-                <th>Description</th>
+            <tr>
+              <th>Date</th>
+              <th>Hours</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {this.timesheet.map(jobs => (
+              <tr class={{"grid-row": true, "selected": this.selectedTimesheet?.id === jobs.id}} on-click={() => this.selectTimesheet(jobs)}>
+                <td >{this.formatDate(jobs.date)}</td>
+                <td>{jobs.hours}</td>
+                <td>{jobs.description}</td>
               </tr>
-              </thead>
-              <tbody>
-
-              {this.timesheet.map(jobs => (
-                <tr class={{"grid-row": true, "selected": this.selectedTimesheet?.id === jobs.id}} on-click={() => this.selectTimesheet(jobs)}>
-                  <td >{jobs.date}</td>
-                  <td>{jobs.hours}</td>
-                  <td>{jobs.description}</td>
-                </tr>
-              ))}
-              </tbody>
-            </table>
-          </div>
-        }
+            ))}
+            </tbody>
+          </table>
+        </div>
+      
         
        { this.selectedTimesheet?
           <div class={"edit-container"} style={{"box-shadow": "1px 2px 5px 0px #0000008f"}}>
@@ -242,7 +247,7 @@ private async addTimesheetEntry() {
           <md-elevated-button class="add-btn"  on-click={() => this.addTimesheetEntry()}>Add Task</md-elevated-button>
           <md-elevated-button class="delete-btn" on-click={() => this.deleteTimesheetEntry(this.selectedTimesheet.id)} >Delete Task</md-elevated-button>
         </div>
-          : <div>
+          : <div class={"edit-container"}>
              <md-elevated-button class="add-btn"  on-click={() => this.addTimesheetEntry()}>Add Task</md-elevated-button>
           </div>
         }
