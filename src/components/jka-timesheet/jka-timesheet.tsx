@@ -132,6 +132,7 @@ private async addTimesheetEntry() {
   if(this.selectedTimesheet == null) {
     this.selectedTimesheet = {} as Timesheet
     this.selectedTimesheet.id = "-1"
+    this.selectedTimesheet.employeeId = this.worker
   }
   
   switch (flag) {

@@ -34,7 +34,7 @@ thead{
 
 table tbody{
   
-  /* max-height: 35vh; */
+  height: 10vh;
   box-shadow: inset 0px 2px 8px 0px #00000078;
   overflow: auto;
   background-color: white;
