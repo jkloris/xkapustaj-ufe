@@ -215,7 +215,22 @@ private async addTimesheetEntry() {
               ></md-filled-text-field>
         </div>
         :
-        <div></div>
+        <div class={"edit-container"} style={{"box-shadow": "1px 2px 5px 0px #0000008f"}}>
+            <md-filled-text-field
+                type="date"
+                label="Date"
+                onInput={(event: Event) => this.handleInput(event, InputAtt.date)}
+              ></md-filled-text-field>
+              <md-filled-text-field
+                type="number"
+                label="Hours"
+                onInput={(event: Event) => this.handleInput(event, InputAtt.hours)}
+              ></md-filled-text-field>
+              <md-filled-text-field
+                label="Description"
+                onInput={(event: Event) => this.handleInput(event, InputAtt.description)}
+              ></md-filled-text-field>
+        </div>
         }
         
 
@@ -227,7 +242,9 @@ private async addTimesheetEntry() {
           <md-elevated-button class="add-btn"  on-click={() => this.addTimesheetEntry()}>Add Task</md-elevated-button>
           <md-elevated-button class="delete-btn" on-click={() => this.deleteTimesheetEntry(this.selectedTimesheet.id)} >Delete Task</md-elevated-button>
         </div>
-          : <div></div>
+          : <div>
+             <md-elevated-button class="add-btn"  on-click={() => this.addTimesheetEntry()}>Add Task</md-elevated-button>
+          </div>
         }
         </div>
     );
