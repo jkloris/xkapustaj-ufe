@@ -77,9 +77,9 @@ export class JkaPersonalPage {
           doneHoursAgg[description] += hours
         }
       } else {
-        totalHoursAgg[description] = hours;
+        totalHoursAgg[description] = +hours;
         if(d > new Date(obj.date)) {
-          doneHoursAgg[description] = hours
+          doneHoursAgg[description] = +hours
         }
       }
     }
