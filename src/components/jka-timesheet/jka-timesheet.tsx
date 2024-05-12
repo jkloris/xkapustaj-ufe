@@ -110,6 +110,10 @@ private async addTimesheetEntry() {
      if (response.status < 299) {
       this.selectedTimesheet = null
       const ts= await this.getTimesheet()
+      //Testing
+      if(this.timesheet.length == 0){
+        this.timesheet = [this.selectedTimesheet]
+      }
       this.timesheet = ts;
      } else {
      this.errorMessage = `Cannot add entry: ${response.statusText}`
@@ -215,7 +219,7 @@ private async addTimesheetEntry() {
         </div>
       
         
-       { this.selectedTimesheet?
+       {/* { this.selectedTimesheet? */}
           <div class={"edit-container"} style={{"box-shadow": "1px 2px 5px 0px #0000008f"}}>
             <md-filled-text-field
                 type="date"
@@ -235,8 +239,8 @@ private async addTimesheetEntry() {
                 onInput={(event: Event) => this.handleInput(event, InputAtt.description)}
               ></md-filled-text-field>
         </div>
-        :
-        <div class={"edit-container"} style={{"box-shadow": "1px 2px 5px 0px #0000008f"}}>
+        {/* :
+        <div class="edit-container w" style={{"box-shadow": "1px 2px 5px 0px #0000008f"}}>
             <md-filled-text-field
                 type="date"
                 label="Date"
@@ -249,10 +253,11 @@ private async addTimesheetEntry() {
               ></md-filled-text-field>
               <md-filled-text-field
                 label="Description"
+                value={this.selectedTimesheet?.description??""}
                 onInput={(event: Event) => this.handleInput(event, InputAtt.description)}
               ></md-filled-text-field>
         </div>
-        }
+        } */}
         
 
 

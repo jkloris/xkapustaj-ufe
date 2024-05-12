@@ -70,18 +70,12 @@ export class JkaPersonalPage {
     const d = new Date()
     for (const obj of timesheet) {
       const { description, hours } = obj;
-     
-      if (description in totalHoursAgg) {
-        totalHoursAgg[description] += hours;
-        if(d > new Date(obj.date)) {
-          doneHoursAgg[description] += hours
-        }
-      } else {
-        totalHoursAgg[description] = +hours;
-        if(d > new Date(obj.date)) {
-          doneHoursAgg[description] = +hours
-        }
+
+      totalHoursAgg[description] = description in totalHoursAgg? totalHoursAgg[description]+hours  : hours
+      if(d > new Date(obj.date)) {
+        doneHoursAgg[description] = description in doneHoursAgg? doneHoursAgg[description]+hours  : hours
       }
+      
     }
   
     const result: { description: string; totalHours: number; doneHours: number }[] = [];
